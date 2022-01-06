@@ -55,7 +55,7 @@ def Log(logg : str):
 
     binLog = pickle.dumps(logg)
 
-    with open('Logs.txt', 'wb') as w:
+    with open('Logs.txt', 'ab', 'utf8') as w:
         w.write(binLog)
         w.close()
 
@@ -65,6 +65,16 @@ def Log(logg : str):
 async def on_ready():
     print(Colors.green+'Online')
     kernel32.SetConsoleTitleW('Trader Bot')
+
+    Log(f'Wlonczono bota - {datetime.datetime.now()}')
+
+@client.event
+async def on_member_join(member):
+    await guild.system_channel.send(f'<@{member.id}> wbił na serwer')
+
+    Log(f'@{member.id} wszedl na serwer - {datetime.datetime.now()}')
+
+
 
 # @client.event
 # async def on_guild_join():
@@ -97,7 +107,7 @@ async def kick(ctx, member : discord.Member, *, reason=None):
     await ctx.guild.kick(member)
     await ctx.channel.send(f"@{ctx.author.id} wyjebał {member.mention} za {reason}")
 
-    Log(f'@{ctx.author.id} wyrzucił {member} za {reason} \n')
+    Log(f'@{ctx.author.id} wyrzucil {member} za {reason} - {datetime.datetime.now()}\n')
 
 
 
@@ -125,6 +135,8 @@ async def random_choice(ctx, choice1 : str, choice2 : str):
 async def ranndom_Int(ctx, min : int, max : int):
     if max > 2137:
         await ctx.channel.send('maksymalna wartość INT dla zmiannej max to 2137')
+    elif max < 0:
+        await ctx.channel.send('Zmienna max nie akceptuje wartości ujemnych')
     await ctx.channel.send(str(random.randint(min, max)))
 
 @client.command()
